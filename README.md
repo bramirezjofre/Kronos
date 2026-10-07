@@ -335,3 +335,33 @@ This project is licensed under the [MIT License](./LICENSE).
 
 
 
+
+## 🐳 Reproducible Docker workflow (inference only)
+
+The repository includes a CPU-oriented `Dockerfile`, `compose.yaml`, and an offline smoke
+check. Checkpoints are intentionally not copied into the image: obtain the pinned model
+and tokenizer revisions from Hugging Face as described in the forecasting example, or mount
+an existing Hugging Face cache. Do not use untrusted checkpoint files.
+
+```bash
+# Build and show the safe, credential-free help command
+ docker compose run --rm kronos --help
+# Verify dependencies and the public model API without downloading weights
+ docker compose run --rm kronos --self-test
+```
+
+Actual inference requires network access (or a populated `HF_HOME` cache), sufficient RAM,
+and the model/tokenizer checkpoints. This project is for research and evaluation; the
+container does not place trades. Keep secrets outside the image and pass no credentials to
+the smoke check.
+
+### Reproducible evaluation proposal
+
+* **Smoke:** build image, run `--help` and `--self-test` with network disabled.
+* **Inference:** mount fixed input CSV and pinned Hugging Face revisions; record image digest,
+  revisions, device, seed, and output checksum.
+* **Regression:** run `pytest tests/test_kronos_regression.py` with the checked-in fixtures and
+  pinned revisions (network/cache required).
+* **Backtest:** use a time-ordered holdout, explicit commissions, spread/slippage and no
+  look-ahead; compare against buy-and-hold and a persistence/last-close baseline. Report
+  returns, volatility, drawdown, turnover and costs separately.

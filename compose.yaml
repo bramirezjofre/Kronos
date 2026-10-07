@@ -1,0 +1,15 @@
+services:
+  kronos:
+    build: .
+    image: kronos:local
+    working_dir: /app
+    environment:
+      HF_HOME: /cache/huggingface
+      HF_HUB_DISABLE_TELEMETRY: "1"
+    volumes:
+      - hf-cache:/cache/huggingface
+    # No network is required for --help or --self-test.
+    command: ["--help"]
+
+volumes:
+  hf-cache:
