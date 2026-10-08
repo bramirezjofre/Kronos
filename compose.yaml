@@ -8,8 +8,13 @@ services:
       HF_HUB_DISABLE_TELEMETRY: "1"
     volumes:
       - hf-cache:/cache/huggingface
-    # No network is required for --help or --self-test.
-    command: ["--help"]
+    ports: ["${KRONOS_PORT:-8000}:8000"]
+    command: ["scripts/kronos_service.py"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/healthz')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
 volumes:
   hf-cache:

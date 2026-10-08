@@ -15,5 +15,5 @@ RUN pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu 
 COPY . .
 
 # Safe, offline-by-default validation; it does not download checkpoints.
-ENTRYPOINT ["python", "scripts/kronos_smoke.py"]
-CMD ["--help"]
+ENTRYPOINT ["python"]
+CMD ["scripts/kronos_service.py"]
