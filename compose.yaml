@@ -9,9 +9,10 @@ services:
     volumes:
       - hf-cache:/cache/huggingface
     ports: ["${KRONOS_PORT:-8000}:8000"]
-    command: ["scripts/kronos_service.py"]
+    command: ["-m", "scripts.kronos_service"]
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/healthz')"]
+      # Readiness loads the real checkpoint; a live process without a model is unhealthy.
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/readyz')"]
       interval: 10s
       timeout: 5s
       retries: 3

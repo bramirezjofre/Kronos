@@ -16,4 +16,4 @@ COPY . .
 
 # Safe, offline-by-default validation; it does not download checkpoints.
 ENTRYPOINT ["python"]
-CMD ["scripts/kronos_service.py"]
+CMD ["-m", "scripts.kronos_service"]

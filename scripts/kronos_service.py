@@ -1,9 +1,11 @@
 """Small dependency-light HTTP service for the real Kronos predictor.
-No checkpoint is downloaded until /healthz?load=1 or /forecast is requested.
+No checkpoint is downloaded until /readyz or /forecast is requested.
 """
-import json, os, threading
+import json, os, sys, threading
+from pathlib import Path
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from datetime import datetime, timezone
+# Support both `python scripts/kronos_service.py` and `python -m scripts.kronos_service`.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import pandas as pd
 from model import Kronos, KronosTokenizer, KronosPredictor
 
